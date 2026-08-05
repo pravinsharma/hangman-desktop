@@ -4,7 +4,7 @@ param(
 
 $ErrorActionPreference = "Stop"
 $buildDir = "build"
-$exe = Join-Path $buildDir "sdl3-vanilla-scaffold.exe"
+$exe = Join-Path $buildDir "hangman.exe"
 
 foreach ($arg in $args) {
     switch ($arg) {

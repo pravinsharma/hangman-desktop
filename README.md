@@ -1,6 +1,13 @@
-# SDL3 Vanilla Scaffold
+# Hangman Desktop
 
-Minimal C++17 + SDL3 + CMake + vcpkg + Ninja project.
+Minimal C++20 + SDL3 + CMake + vcpkg + Ninja project.
+
+## Documentation
+
+- [Build Instructions](docs/BUILD.md)
+- [Architecture](docs/ARCHITECTURE.md)
+- [Roadmap](docs/ROADMAP.md)
+- [Contributing](docs/CONTRIBUTING.md)
 
 ## Prerequisites
 
@@ -18,5 +25,5 @@ cmake --build build
 ## Run
 
 ```bash
-./build/sdl3-vanilla-scaffold
+./build/hangman
 ```
