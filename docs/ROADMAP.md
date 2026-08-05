@@ -20,13 +20,13 @@
 ## Phase 1 — Core Game Engine
 | # | Milestone | Status |
 |---|-----------|--------|
-| 1.1 | Word/dictionary management (load from file) | `[ ]` |
-| 1.2 | Game state machine (Menu, Playing, Won, Lost) | `[ ]` |
-| 1.3 | Hangman figure renderer (0–6 wrong guesses) | `[ ]` |
-| 1.4 | Word mask & letter reveal logic | `[ ]` |
-| 1.5 | Input handling (physical keyboard A–Z) | `[ ]` |
-| 1.6 | Guess validation & feedback (correct / wrong / duplicate) | `[ ]` |
-| 1.7 | Win/lose condition detection | `[ ]` |
+| 1.1 | Word/dictionary management (load from file) | `[x]` |
+| 1.2 | Game state machine (Menu, Playing, Won, Lost) | `[x]` |
+| 1.3 | Hangman figure renderer (0–6 wrong guesses) | `[x]` |
+| 1.4 | Word mask & letter reveal logic | `[x]` |
+| 1.5 | Input handling (physical keyboard A–Z) | `[x]` |
+| 1.6 | Guess validation & feedback (correct / wrong / duplicate) | `[x]` |
+| 1.7 | Win/lose condition detection | `[x]` |
 
 ---
 
@@ -83,9 +83,9 @@
 | Phase | Complete | Total | % |
 |-------|----------|-------|---|
 | Phase 0 — Scaffold & Foundation | 6 | 6 | 100% |
-| Phase 1 — Core Game Engine | 0 | 7 | 0% |
+| Phase 1 — Core Game Engine | 7 | 7 | 100% |
 | Phase 2 — UI & Rendering | 0 | 6 | 0% |
 | Phase 3 — Game Features | 0 | 7 | 0% |
 | Phase 4 — Polish & UX | 0 | 6 | 0% |
 | Phase 5 — Distribution & Deployment | 0 | 5 | 0% |
-| **Total** | **6** | **37** | **~16%** |
+| **Total** | **13** | **37** | **~35%** |

@@ -16,8 +16,27 @@ find_package(SDL3 REQUIRED CONFIG)
 find_package(SDL3_ttf REQUIRED CONFIG)
 find_package(SDL3_image REQUIRED CONFIG)
 
-add_executable(${PROJECT_NAME} src/main.cpp)
+add_executable(${PROJECT_NAME}
+    src/main.cpp
+    src/game/GameState.h
+    src/game/WordBank.h
+    src/game/HangmanGame.h
+    src/ui/Renderer.h
+    src/ui/HangmanRenderer.h
+    src/ui/KeyboardWidget.h
+    src/ui/MenuScreen.h
+    src/ui/GameScreen.h
+    src/ui/ResultScreen.h
+    src/assets/AssetManager.h
+    src/utils/StringUtils.h
+)
+
 target_link_libraries(${PROJECT_NAME} PRIVATE SDL3::SDL3 SDL3_ttf::SDL3_ttf SDL3_image::SDL3_image)
+
+target_include_directories(${PROJECT_NAME} PRIVATE
+    ${CMAKE_SOURCE_DIR}/src
+    ${CMAKE_SOURCE_DIR}/data
+)
 
 if(WIN32)
     add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
@@ -27,5 +46,9 @@ if(WIN32)
     add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/assets" "$<TARGET_FILE_DIR:${PROJECT_NAME}>/assets"
         COMMENT "Copying assets to output directory"
+    )
+    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/data" "$<TARGET_FILE_DIR:${PROJECT_NAME}>/data"
+        COMMENT "Copying data to output directory"
     )
 endif()
