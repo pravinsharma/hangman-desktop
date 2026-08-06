@@ -167,6 +167,7 @@ int main(int argc, char* argv[]) {
         SDL_GetWindowSize(window, &windowWidth, &windowHeight);
 
         gameScreen.setWindowSize(static_cast<float>(windowWidth), static_cast<float>(windowHeight));
+        menuScreen.setWindowSize(static_cast<float>(windowWidth), static_cast<float>(windowHeight));
         gameScreen.update(dt);
         transition.update(dt);
         confetti.update(dt);
