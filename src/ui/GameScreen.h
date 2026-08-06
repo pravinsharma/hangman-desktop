@@ -115,20 +115,20 @@ public:
 
         SDL_Color scoreColor{255, 235, 150, 255};
         std::string scoreText = "Score: " + std::to_string(calculateScore(game));
-        renderer.drawText(scoreText, centerX, m_windowHeight * 0.80f, scoreColor, m_font);
+        renderer.drawText(scoreText, centerX, m_windowHeight * 0.74f, scoreColor, m_font);
 
         SDL_Color highScoreColor{150, 235, 170, 255};
         std::string highScoreText = "Best: " + std::to_string(highScore);
-        renderer.drawText(highScoreText, centerX, m_windowHeight * 0.855f, highScoreColor, m_font);
+        renderer.drawText(highScoreText, centerX, m_windowHeight * 0.785f, highScoreColor, m_font);
 
-        float keyboardY = m_windowHeight * 0.91f;
-        KeyboardWidget keyboard(80.0f, keyboardY, 44.0f, 44.0f, 7.0f);
+        float keyboardY = m_windowHeight * 0.83f;
+        KeyboardWidget keyboard(80.0f, keyboardY, 38.0f, 38.0f, 5.0f);
         keyboard.update(0.016f);
         keyboard.draw(renderer, m_font, game);
 
         SDL_Color hintKeyColor{100, 115, 145, 255};
         std::string controls = "[H] Hint   [M] Music   [S] Settings";
-        renderer.drawText(controls, centerX, m_windowHeight * 0.975f, hintKeyColor, m_font);
+        renderer.drawText(controls, centerX, m_windowHeight * 0.96f, hintKeyColor, m_font);
     }
 
     int getLastScore() const { return m_lastScore; }
