@@ -21,6 +21,8 @@ add_executable(${PROJECT_NAME}
     src/game/GameState.h
     src/game/WordBank.h
     src/game/HangmanGame.h
+    src/game/Difficulty.h
+    src/game/ScoreManager.h
     src/ui/Renderer.h
     src/ui/HangmanRenderer.h
     src/ui/KeyboardWidget.h
@@ -28,6 +30,7 @@ add_executable(${PROJECT_NAME}
     src/ui/GameScreen.h
     src/ui/ResultScreen.h
     src/assets/AssetManager.h
+    src/assets/AudioManager.h
     src/utils/StringUtils.h
 )
 

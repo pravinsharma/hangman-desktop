@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <cctype>
 #include <random>
+#include "Difficulty.h"
 
 class HangmanGame {
 public:
@@ -14,14 +15,17 @@ public:
 
     HangmanGame() = default;
 
-    void startNewGame(std::string_view word, std::string_view category) {
+    void startNewGame(std::string_view word, std::string_view category, Difficulty difficulty = Difficulty::Medium) {
         m_word = std::string(word);
         m_category = std::string(category);
+        m_difficulty = difficulty;
+        m_maxWrongGuesses = maxWrongGuessesForDifficulty(difficulty);
         m_revealed.assign(m_word.size(), false);
         m_used.fill(false);
         m_wrongGuesses = 0;
         m_won = false;
         m_lost = false;
+        m_hintsUsed = 0;
 
         for (size_t i = 0; i < m_word.size(); ++i) {
             if (m_word[i] == ' ') {
@@ -51,7 +55,7 @@ public:
 
         if (!found) {
             ++m_wrongGuesses;
-            if (m_wrongGuesses >= kMaxWrongGuesses) {
+            if (m_wrongGuesses >= m_maxWrongGuesses) {
                 m_lost = true;
             }
         } else {
@@ -61,11 +65,42 @@ public:
         return true;
     }
 
+    bool useHint() {
+        if (m_hintsUsed >= hintsForDifficulty(m_difficulty)) {
+            return false;
+        }
+
+        std::vector<size_t> hidden;
+        for (size_t i = 0; i < m_word.size(); ++i) {
+            if (!m_revealed[i] && m_word[i] != ' ') {
+                hidden.push_back(i);
+            }
+        }
+
+        if (hidden.empty()) {
+            return false;
+        }
+
+        std::random_device rd;
+        std::mt19937 rng(rd());
+        std::uniform_int_distribution<std::size_t> dist(0, hidden.size() - 1);
+        size_t idx = hidden[dist(rng)];
+        m_revealed[idx] = true;
+        ++m_hintsUsed;
+
+        checkWin();
+        return true;
+    }
+
     bool isWon() const { return m_won; }
     bool isLost() const { return m_lost; }
     bool isGameOver() const { return m_won || m_lost; }
     int getWrongGuesses() const { return m_wrongGuesses; }
-    int getRemainingLives() const { return kMaxWrongGuesses - m_wrongGuesses; }
+    int getMaxWrongGuesses() const { return m_maxWrongGuesses; }
+    int getRemainingLives() const { return m_maxWrongGuesses - m_wrongGuesses; }
+    int getHintsUsed() const { return m_hintsUsed; }
+    int getHintsRemaining() const { return hintsForDifficulty(m_difficulty) - m_hintsUsed; }
+    Difficulty getDifficulty() const { return m_difficulty; }
     std::string_view getWord() const { return m_word; }
     std::string_view getCategory() const { return m_category; }
 
@@ -120,6 +155,9 @@ private:
     std::vector<bool> m_revealed;
     std::array<bool, 26> m_used{};
     int m_wrongGuesses{0};
+    int m_maxWrongGuesses{kMaxWrongGuesses};
+    int m_hintsUsed{0};
     bool m_won{false};
     bool m_lost{false};
+    Difficulty m_difficulty{Difficulty::Medium};
 };

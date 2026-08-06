@@ -45,13 +45,13 @@
 ## Phase 3 — Game Features
 | # | Milestone | Status |
 |---|-----------|--------|
-| 3.1 | Difficulty levels (Easy / Medium / Hard) | `[ ]` |
-| 3.2 | Hint system (reveal a random unrevealed letter) | `[ ]` |
-| 3.3 | Score tracking & high-score persistence | `[ ]` |
-| 3.4 | Sound effects (correct, wrong, win, lose) via SDL3_mixer | `[ ]` |
-| 3.5 | Background music toggle | `[ ]` |
-| 3.6 | Word-of-the-day / daily challenge mode | `[ ]` |
-| 3.7 | Hint cost / penalty balancing | `[ ]` |
+| 3.1 | Difficulty levels (Easy / Medium / Hard) | `[x]` |
+| 3.2 | Hint system (reveal a random unrevealed letter) | `[x]` |
+| 3.3 | Score tracking & high-score persistence | `[x]` |
+| 3.4 | Sound effects (correct, wrong, win, lose) via SDL3_mixer | `[x]` |
+| 3.5 | Background music toggle | `[x]` |
+| 3.6 | Word-of-the-day / daily challenge mode | `[x]` |
+| 3.7 | Hint cost / penalty balancing | `[x]` |
 
 ---
 
@@ -85,7 +85,7 @@
 | Phase 0 — Scaffold & Foundation | 6 | 6 | 100% |
 | Phase 1 — Core Game Engine | 7 | 7 | 100% |
 | Phase 2 — UI & Rendering | 6 | 6 | 100% |
-| Phase 3 — Game Features | 0 | 7 | 0% |
+| Phase 3 — Game Features | 7 | 7 | 100% |
 | Phase 4 — Polish & UX | 0 | 6 | 0% |
 | Phase 5 — Distribution & Deployment | 0 | 5 | 0% |
-| **Total** | **19** | **37** | **~51%** |
+| **Total** | **26** | **37** | **~70%** |

@@ -13,14 +13,17 @@
 #include "game/GameState.h"
 #include "game/WordBank.h"
 #include "game/HangmanGame.h"
+#include "game/ScoreManager.h"
+#include "game/Difficulty.h"
 #include "ui/Renderer.h"
 #include "ui/MenuScreen.h"
 #include "ui/GameScreen.h"
 #include "ui/ResultScreen.h"
 #include "assets/AssetManager.h"
+#include "assets/AudioManager.h"
 
 int main(int argc, char* argv[]) {
-    if (!SDL_Init(SDL_INIT_VIDEO)) {
+    if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO)) {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "SDL_Init failed: %s", SDL_GetError());
         return 1;
     }
@@ -52,6 +55,9 @@ int main(int argc, char* argv[]) {
     }
 
     AssetManager assetManager;
+    AudioManager audioManager;
+    audioManager.init();
+
     const char* fontPath = "C:\\Windows\\Fonts\\arial.ttf";
     TTF_Font* titleFont = assetManager.getFont(fontPath, 64);
     TTF_Font* uiFont = assetManager.getFont(fontPath, 32);
@@ -62,6 +68,8 @@ int main(int argc, char* argv[]) {
     wordBank.loadCategory("Countries", "data/words/countries.txt");
     wordBank.loadCategory("Technology", "data/words/tech.txt");
 
+    ScoreManager scoreManager;
+
     std::vector<std::string> categories = wordBank.getCategories();
     MenuScreen menuScreen;
     menuScreen.setCategories(categories);
@@ -71,6 +79,7 @@ int main(int argc, char* argv[]) {
 
     HangmanGame game;
     std::string selectedCategory;
+    Difficulty selectedDifficulty = Difficulty::Medium;
     GameState currentState = GameState::Menu;
 
     std::mt19937 rng(static_cast<unsigned int>(std::time(nullptr)));
@@ -91,16 +100,21 @@ int main(int argc, char* argv[]) {
 
             switch (currentState) {
                 case GameState::Menu: {
-                    GameState newState = menuScreen.handleEvent(event, selectedCategory);
+                    GameState newState = menuScreen.handleEvent(event, selectedCategory, selectedDifficulty);
                     if (newState == GameState::Playing && !selectedCategory.empty()) {
-                        std::string word = wordBank.getRandomWord(selectedCategory, rng);
-                        game.startNewGame(word, selectedCategory);
+                        std::string word;
+                        if (menuScreen.isDailyMode()) {
+                            word = wordBank.getDailyWord(selectedCategory);
+                        } else {
+                            word = wordBank.getRandomWord(selectedCategory, rng);
+                        }
+                        game.startNewGame(word, selectedCategory, selectedDifficulty);
                         currentState = GameState::Playing;
                     }
                     break;
                 }
                 case GameState::Playing: {
-                    GameState newState = gameScreen.handleEvent(event, game);
+                    GameState newState = gameScreen.handleEvent(event, game, scoreManager, audioManager);
                     if (newState != GameState::Playing) {
                         currentState = newState;
                     }
@@ -132,14 +146,18 @@ int main(int argc, char* argv[]) {
             case GameState::Menu:
                 menuScreen.draw(sdlRenderer, titleFont);
                 break;
-            case GameState::Playing:
-                gameScreen.draw(sdlRenderer, game);
+            case GameState::Playing: {
+                int highScore = scoreManager.loadHighScore(game.getCategory());
+                gameScreen.draw(sdlRenderer, game, highScore);
                 break;
+            }
             case GameState::Won:
-                resultScreen.draw(sdlRenderer, uiFont, true, game.revealWord());
+                resultScreen.draw(sdlRenderer, uiFont, true, game.revealWord(), gameScreen.getLastScore(),
+                                  scoreManager.loadHighScore(game.getCategory()));
                 break;
             case GameState::Lost:
-                resultScreen.draw(sdlRenderer, uiFont, false, game.revealWord());
+                resultScreen.draw(sdlRenderer, uiFont, false, game.revealWord(), gameScreen.getLastScore(),
+                                  scoreManager.loadHighScore(game.getCategory()));
                 break;
         }
 

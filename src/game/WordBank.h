@@ -9,6 +9,7 @@
 #include <sstream>
 #include <algorithm>
 #include <cctype>
+#include <chrono>
 
 class WordBank {
 public:
@@ -37,6 +38,19 @@ public:
         if (it == m_words.end() || it->second.empty()) {
             return {};
         }
+        std::uniform_int_distribution<std::size_t> dist(0, it->second.size() - 1);
+        return it->second[dist(rng)];
+    }
+
+    std::string getDailyWord(std::string_view category) const {
+        auto it = m_words.find(std::string(category));
+        if (it == m_words.end() || it->second.empty()) {
+            return {};
+        }
+
+        auto now = std::chrono::system_clock::now();
+        auto days = std::chrono::duration_cast<std::chrono::days>(now - std::chrono::system_clock::time_point{}).count();
+        std::mt19937 rng(static_cast<unsigned int>(days));
         std::uniform_int_distribution<std::size_t> dist(0, it->second.size() - 1);
         return it->second[dist(rng)];
     }
