@@ -33,12 +33,12 @@
 ## Phase 2 — UI & Rendering
 | # | Milestone | Status |
 |---|-----------|--------|
-| 2.1 | Menu screen (Start Game, Category Select, Quit) | `[ ]` |
-| 2.2 | Category-based word lists (Movies, Countries, Tech, etc.) | `[ ]` |
-| 2.3 | HUD: remaining lives, current word mask, used letters | `[ ]` |
-| 2.4 | Hangman SVG/bitmap assets + animation on wrong guess | `[ ]` |
-| 2.5 | Victory / defeat overlay with stats | `[ ]` |
-| 2.6 | Responsive layout (centered game area, scaling) | `[ ]` |
+| 2.1 | Menu screen (Start Game, Category Select, Quit) | `[x]` |
+| 2.2 | Category-based word lists (Movies, Countries, Tech, etc.) | `[x]` |
+| 2.3 | HUD: remaining lives, current word mask, used letters | `[x]` |
+| 2.4 | Hangman SVG/bitmap assets + animation on wrong guess | `[x]` |
+| 2.5 | Victory / defeat overlay with stats | `[x]` |
+| 2.6 | Responsive layout (centered game area, scaling) | `[x]` |
 
 ---
 
@@ -84,8 +84,8 @@
 |-------|----------|-------|---|
 | Phase 0 — Scaffold & Foundation | 6 | 6 | 100% |
 | Phase 1 — Core Game Engine | 7 | 7 | 100% |
-| Phase 2 — UI & Rendering | 0 | 6 | 0% |
+| Phase 2 — UI & Rendering | 6 | 6 | 100% |
 | Phase 3 — Game Features | 0 | 7 | 0% |
 | Phase 4 — Polish & UX | 0 | 6 | 0% |
 | Phase 5 — Distribution & Deployment | 0 | 5 | 0% |
-| **Total** | **13** | **37** | **~35%** |
+| **Total** | **19** | **37** | **~51%** |

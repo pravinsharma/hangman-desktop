@@ -31,10 +31,10 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    const int width = 1280;
-    const int height = 720;
+    const int baseWidth = 1280;
+    const int baseHeight = 720;
 
-    SDL_Window* window = SDL_CreateWindow("Hangman", width, height, 0);
+    SDL_Window* window = SDL_CreateWindow("Hangman", baseWidth, baseHeight, SDL_WINDOW_RESIZABLE);
     if (!window) {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "SDL_CreateWindow failed: %s", SDL_GetError());
         TTF_Quit();
@@ -66,7 +66,7 @@ int main(int argc, char* argv[]) {
     MenuScreen menuScreen;
     menuScreen.setCategories(categories);
 
-    GameScreen gameScreen(200.0f, 600.0f, uiFont);
+    GameScreen gameScreen(200.0f, 600.0f, uiFont, static_cast<float>(baseWidth), static_cast<float>(baseHeight));
     ResultScreen resultScreen;
 
     HangmanGame game;
@@ -75,8 +75,14 @@ int main(int argc, char* argv[]) {
 
     std::mt19937 rng(static_cast<unsigned int>(std::time(nullptr)));
 
+    Uint32 lastTime = SDL_GetTicks();
     bool running = true;
     while (running) {
+        Uint32 currentTime = SDL_GetTicks();
+        float dt = (currentTime - lastTime) / 1000.0f;
+        if (dt > 0.1f) dt = 0.1f;
+        lastTime = currentTime;
+
         SDL_Event event;
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_EVENT_QUIT) {
@@ -112,6 +118,13 @@ int main(int argc, char* argv[]) {
                     break;
             }
         }
+
+        int windowWidth = baseWidth;
+        int windowHeight = baseHeight;
+        SDL_GetWindowSize(window, &windowWidth, &windowHeight);
+
+        gameScreen.setWindowSize(static_cast<float>(windowWidth), static_cast<float>(windowHeight));
+        gameScreen.update(dt);
 
         Renderer sdlRenderer(renderer);
 
