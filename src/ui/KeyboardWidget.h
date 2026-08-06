@@ -22,7 +22,7 @@ public:
         if (key >= SDLK_A && key <= SDLK_Z) {
             char letter = static_cast<char>(std::toupper(key - SDLK_A + 'A'));
             int idx = letter - 'A';
-            m_flashTimer[idx] = 0.2f;
+            m_flashTimer[idx] = 0.25f;
             callback(letter);
         }
     }
@@ -50,17 +50,27 @@ public:
             bool used = game.isLetterUsed(letter);
             bool flashing = m_flashTimer[i] > 0.0f;
 
-            SDL_Color bgColor = used ? SDL_Color{80, 80, 80, 255} : SDL_Color{60, 60, 60, 255};
-            SDL_Color textColor = used ? SDL_Color{120, 120, 120, 255} : SDL_Color{220, 220, 220, 255};
+            SDL_Color bgColor = used ? SDL_Color{35, 42, 58, 255} : SDL_Color{45, 55, 75, 255};
+            SDL_Color borderColor = used ? SDL_Color{55, 65, 85, 255} : SDL_Color{65, 80, 110, 255};
+            SDL_Color textColor = used ? SDL_Color{90, 105, 130, 255} : SDL_Color{220, 230, 255, 255};
 
             if (flashing && !used) {
-                float flash = m_flashTimer[i] / 0.2f;
-                bgColor.r = static_cast<Uint8>(60 + 195 * flash);
-                bgColor.g = static_cast<Uint8>(60 + 195 * flash);
-                bgColor.b = static_cast<Uint8>(60 + 195 * flash);
+                float flash = m_flashTimer[i] / 0.25f;
+                bgColor.r = static_cast<Uint8>(45 + 180 * flash);
+                bgColor.g = static_cast<Uint8>(55 + 200 * flash);
+                bgColor.b = static_cast<Uint8>(75 + 220 * flash);
+                borderColor = SDL_Color{100, 160, 255, 255};
+                textColor = SDL_Color{255, 255, 255, 255};
             }
 
-            renderer.drawRect(x, y, m_keyWidth, m_keyHeight, bgColor);
+            renderer.drawRoundedRect(x, y, m_keyWidth, m_keyHeight, 8.0f, bgColor);
+
+            SDL_Color borderTopLeft{80, 100, 140, 255};
+            SDL_Color borderBottomRight{25, 32, 45, 255};
+            renderer.drawLine(x + 2.0f, y + m_keyHeight - 2.0f, x + m_keyWidth - 2.0f, y + m_keyHeight - 2.0f, borderBottomRight);
+            renderer.drawLine(x + m_keyWidth - 2.0f, y + 2.0f, x + m_keyWidth - 2.0f, y + m_keyHeight - 2.0f, borderBottomRight);
+            renderer.drawLine(x + 2.0f, y + 2.0f, x + m_keyWidth - 2.0f, y + 2.0f, borderTopLeft);
+            renderer.drawLine(x + 2.0f, y + 2.0f, x + 2.0f, y + m_keyHeight - 2.0f, borderTopLeft);
 
             std::string letterStr(1, letter);
             renderer.drawText(letterStr, x + m_keyWidth / 2.0f, y + m_keyHeight / 2.0f, textColor, font);
@@ -70,8 +80,8 @@ public:
 private:
     float m_startX{0.0f};
     float m_startY{0.0f};
-    float m_keyWidth{40.0f};
-    float m_keyHeight{40.0f};
-    float m_spacing{4.0f};
+    float m_keyWidth{44.0f};
+    float m_keyHeight{44.0f};
+    float m_spacing{6.0f};
     std::array<float, 26> m_flashTimer{};
 };

@@ -56,32 +56,40 @@ public:
     }
 
     void draw(const Renderer& renderer, TTF_Font* font, const LocalizationManager& localization, const SettingsManager& settings) {
-        renderer.clear(30, 30, 30, 255);
+        renderer.clear(18, 18, 24, 255);
 
-        SDL_Color titleColor{255, 255, 255, 255};
-        renderer.drawText(localization.get("title"), 640.0f, 120.0f, titleColor, font);
+        float centerX = 640.0f;
 
-        SDL_Color subtitleColor{180, 180, 180, 255};
-        renderer.drawText(localization.get("select_category"), 640.0f, 190.0f, subtitleColor, font);
+        SDL_Color titleColor{230, 240, 255, 255};
+        renderer.drawText(localization.get("title"), centerX, 100.0f, titleColor, font);
 
+        SDL_Color subtitleColor{160, 180, 210, 255};
+        renderer.drawText(localization.get("select_category"), centerX, 160.0f, subtitleColor, font);
+
+        float cardY = 200.0f;
+        float cardH = 36.0f;
         for (size_t i = 0; i < m_categories.size(); ++i) {
-            SDL_Color catColor{220, 220, 220, 255};
-            std::string line = std::to_string(i + 1) + ". " + m_categories[i];
-            float y = 250.0f + i * 50.0f;
-            renderer.drawText(line, 640.0f, y, catColor, font);
+            float y = cardY + i * (cardH + 10.0f);
+            SDL_Color cardBg{30, 38, 50, 255};
+            renderer.drawRoundedRect(centerX - 260.0f, y, 520.0f, cardH, 12.0f, cardBg);
+
+            SDL_Color catColor{220, 230, 255, 255};
+            std::string line = std::to_string(i + 1) + ".  " + m_categories[i];
+            renderer.drawTextLeft(line, centerX - 220.0f, y + cardH / 2.0f, catColor, font);
         }
 
-        SDL_Color diffColor{255, 255, 150, 255};
-        std::string diffText = localization.get("difficulty") + " " + std::string(to_string(m_selectedDifficulty));
-        renderer.drawText(diffText, 640.0f, 480.0f, diffColor, font);
+        SDL_Color diffColor{255, 235, 150, 255};
+        std::string diffText = localization.get("difficulty") + "  " + std::string(to_string(m_selectedDifficulty));
+        renderer.drawText(diffText, centerX, 470.0f, diffColor, font);
 
-        SDL_Color dailyColor{150, 255, 150, 255};
-        std::string dailyText = localization.get("daily_mode") + " " + (m_dailyMode ? localization.get("on") : localization.get("off"));
-        renderer.drawText(dailyText, 640.0f, 530.0f, dailyColor, font);
+        SDL_Color dailyColor{150, 235, 180, 255};
+        std::string dailyText = localization.get("daily_mode") + "  " + (m_dailyMode ? localization.get("on") : localization.get("off"));
+        renderer.drawText(dailyText, centerX, 515.0f, dailyColor, font);
 
-        SDL_Color hintColor{120, 120, 120, 255};
-        renderer.drawText(localization.get("select_category_hint"), 640.0f, 600.0f, hintColor, font);
-        renderer.drawText(localization.get("difficulty_hint"), 640.0f, 640.0f, hintColor, font);
+        SDL_Color hintColor{120, 130, 155, 255};
+        renderer.drawText(localization.get("select_category_hint"), centerX, 580.0f, hintColor, font);
+        renderer.drawText(localization.get("difficulty_hint"), centerX, 615.0f, hintColor, font);
+        renderer.drawText("[S] " + localization.get("settings_key"), centerX, 650.0f, hintColor, font);
     }
 
     void setCategories(const std::vector<std::string>& cats) {

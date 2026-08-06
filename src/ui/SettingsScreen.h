@@ -20,7 +20,7 @@ public:
             return GameState::Menu;
         }
 
-        if (key == SDLK_LEFT || key == SDLK_RIGHT) {
+        if (key == SDLK_LEFT || SDLK_RIGHT) {
             int idx = static_cast<int>(m_selectedOption);
             if (key == SDLK_LEFT) {
                 idx = (idx - 1 + 3) % 3;
@@ -61,29 +61,31 @@ public:
     }
 
     void draw(const Renderer& renderer, TTF_Font* font, const SettingsManager& settings, const LocalizationManager& localization) {
-        renderer.clear(30, 30, 30, 255);
+        renderer.clear(18, 18, 24, 255);
 
-        SDL_Color titleColor{255, 255, 255, 255};
-        renderer.drawText(localization.get("settings_title"), 640.0f, 120.0f, titleColor, font);
+        float centerX = 640.0f;
 
-        SDL_Color langColor{220, 220, 220, 255};
-        std::string langText = localization.get("language") + " [1] EN [2] HI";
-        renderer.drawText(langText, 640.0f, 220.0f, langColor, font);
+        SDL_Color titleColor{230, 240, 255, 255};
+        renderer.drawText(localization.get("settings_title"), centerX, 120.0f, titleColor, font);
 
-        SDL_Color textSizeColor = (m_selectedOption == Option::TextSize) ? SDL_Color{255, 255, 150, 255} : SDL_Color{220, 220, 220, 255};
+        SDL_Color langColor{200, 215, 245, 255};
+        std::string langText = localization.get("language") + "   [1] EN   [2] HI";
+        renderer.drawText(langText, centerX, 220.0f, langColor, font);
+
+        SDL_Color textSizeColor = (m_selectedOption == Option::TextSize) ? SDL_Color{255, 245, 160, 255} : SDL_Color{210, 220, 245, 255};
         std::string textSizeStr = settings.textSizeToString(settings.getTextSize());
-        std::string textSizeText = localization.get("text_size") + " " + textSizeStr;
-        renderer.drawText(textSizeText, 640.0f, 280.0f, textSizeColor, font);
+        std::string textSizeText = localization.get("text_size") + "   " + textSizeStr;
+        renderer.drawText(textSizeText, centerX, 285.0f, textSizeColor, font);
 
-        SDL_Color cbColor = (m_selectedOption == Option::ColorBlind) ? SDL_Color{255, 255, 150, 255} : SDL_Color{220, 220, 220, 255};
-        std::string cbText = localization.get("color_blind") + " " + (settings.getColorBlindMode() ? "ON" : "OFF");
-        renderer.drawText(cbText, 640.0f, 340.0f, cbColor, font);
+        SDL_Color cbColor = (m_selectedOption == Option::ColorBlind) ? SDL_Color{255, 245, 160, 255} : SDL_Color{210, 220, 245, 255};
+        std::string cbText = localization.get("color_blind") + "   " + (settings.getColorBlindMode() ? "ON" : "OFF");
+        renderer.drawText(cbText, centerX, 350.0f, cbColor, font);
 
-        SDL_Color soundColor = (m_selectedOption == Option::Sound) ? SDL_Color{255, 255, 150, 255} : SDL_Color{220, 220, 220, 255};
-        renderer.drawText(localization.get("sound") + " ON", 640.0f, 400.0f, soundColor, font);
+        SDL_Color soundColor = (m_selectedOption == Option::Sound) ? SDL_Color{255, 245, 160, 255} : SDL_Color{210, 220, 245, 255};
+        renderer.drawText(localization.get("sound") + "   ON", centerX, 415.0f, soundColor, font);
 
-        SDL_Color hintColor{120, 120, 120, 255};
-        renderer.drawText(localization.get("back"), 640.0f, 500.0f, hintColor, font);
+        SDL_Color hintColor{110, 120, 150, 255};
+        renderer.drawText(localization.get("back"), centerX, 500.0f, hintColor, font);
     }
 
 private:

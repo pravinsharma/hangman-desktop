@@ -185,7 +185,7 @@ int main(int argc, char* argv[]) {
                 settingsScreen.draw(sdlRenderer, uiFont, settings, localization);
             } else if (targetState == GameState::Playing) {
                 int highScore = scoreManager.loadHighScore(game.getCategory());
-                gameScreen.draw(sdlRenderer, game, highScore);
+                gameScreen.draw(sdlRenderer, game, highScore, localization);
             } else if (targetState == GameState::Won || targetState == GameState::Lost) {
                 resultScreen.draw(sdlRenderer, uiFont, targetState == GameState::Won, game.revealWord(), gameScreen.getLastScore(),
                                   scoreManager.loadHighScore(game.getCategory()), localization);
@@ -198,7 +198,7 @@ int main(int argc, char* argv[]) {
                 settingsScreen.draw(sdlRenderer, uiFont, settings, localization);
             } else if (currentState == GameState::Playing) {
                 int highScore = scoreManager.loadHighScore(game.getCategory());
-                gameScreen.draw(sdlRenderer, game, highScore);
+                gameScreen.draw(sdlRenderer, game, highScore, localization);
                 confetti.draw(sdlRenderer);
             } else if (currentState == GameState::Won || currentState == GameState::Lost) {
                 resultScreen.draw(sdlRenderer, uiFont, currentState == GameState::Won, game.revealWord(), gameScreen.getLastScore(),

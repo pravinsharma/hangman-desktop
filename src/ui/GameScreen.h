@@ -8,6 +8,7 @@
 #include "ui/HangmanRenderer.h"
 #include "ui/KeyboardWidget.h"
 #include "assets/AudioManager.h"
+#include "utils/LocalizationManager.h"
 #include <string>
 #include <string_view>
 #include <memory>
@@ -19,8 +20,7 @@ public:
         : m_hangmanRenderer(hangmanX, hangmanBaseY),
           m_font(font),
           m_windowWidth(windowWidth),
-          m_windowHeight(windowHeight),
-          m_prevWrongGuesses(0) {}
+          m_windowHeight(windowHeight) {}
 
     GameState handleEvent(const SDL_Event& event, HangmanGame& game, ScoreManager& scoreManager, AudioManager& audioManager) {
         if (event.type != SDL_EVENT_KEY_DOWN) return GameState::Playing;
@@ -87,45 +87,48 @@ public:
         m_windowHeight = height;
     }
 
-    void draw(const Renderer& renderer, const HangmanGame& game, int highScore) {
-        renderer.clear(30, 30, 30, 255);
+    void draw(const Renderer& renderer, const HangmanGame& game, int highScore, const LocalizationManager& localization) {
+        renderer.clear(18, 18, 24, 255);
 
         m_hangmanRenderer.draw(renderer, game.getWrongGuesses());
 
         float centerX = m_windowWidth / 2.0f;
 
-        SDL_Color wordColor{255, 255, 255, 255};
+        SDL_Color wordColor{230, 240, 255, 255};
         std::string masked = game.getMaskedWord();
-        renderer.drawText(masked, centerX, m_windowHeight * 0.55f, wordColor, m_font);
+        renderer.drawText(masked, centerX, m_windowHeight * 0.54f, wordColor, m_font);
 
-        SDL_Color usedColor{150, 150, 150, 255};
+        SDL_Color usedColor{140, 155, 190, 255};
         std::string used = game.getUsedLetters();
         if (!used.empty()) {
-            renderer.drawText("Used: " + used, centerX, m_windowHeight * 0.62f, usedColor, m_font);
+            renderer.drawTextLeft("Used: " + used, centerX - 180.0f, m_windowHeight * 0.61f, usedColor, m_font);
         }
 
-        SDL_Color livesColor{255, 200, 200, 255};
+        float livesVal = static_cast<float>(game.getRemainingLives()) / std::max(1, game.getMaxWrongGuesses());
+        SDL_Color livesColor{240, 120, 120, 255};
         std::string lives = "Lives: " + std::to_string(game.getRemainingLives());
-        renderer.drawText(lives, centerX, m_windowHeight * 0.69f, livesColor, m_font);
+        renderer.drawTextLeft(lives, centerX - 180.0f, m_windowHeight * 0.67f, livesColor, m_font);
 
-        SDL_Color hintsColor{200, 200, 255, 255};
+        SDL_Color hintsColor{150, 200, 255, 255};
         std::string hints = "Hints: " + std::to_string(game.getHintsRemaining());
-        renderer.drawText(hints, centerX, m_windowHeight * 0.76f, hintsColor, m_font);
+        renderer.drawTextLeft(hints, centerX + 40.0f, m_windowHeight * 0.67f, hintsColor, m_font);
 
-        SDL_Color scoreColor{255, 255, 150, 255};
+        SDL_Color scoreColor{255, 235, 150, 255};
         std::string scoreText = "Score: " + std::to_string(calculateScore(game));
-        renderer.drawText(scoreText, centerX, m_windowHeight * 0.83f, scoreColor, m_font);
+        renderer.drawText(scoreText, centerX, m_windowHeight * 0.80f, scoreColor, m_font);
 
-        SDL_Color highScoreColor{150, 255, 150, 255};
+        SDL_Color highScoreColor{150, 235, 170, 255};
         std::string highScoreText = "Best: " + std::to_string(highScore);
-        renderer.drawText(highScoreText, centerX, m_windowHeight * 0.88f, highScoreColor, m_font);
+        renderer.drawText(highScoreText, centerX, m_windowHeight * 0.855f, highScoreColor, m_font);
 
-        float keyboardY = m_windowHeight * 0.92f;
-        KeyboardWidget keyboard(100.0f, keyboardY, 44.0f, 44.0f, 6.0f);
+        float keyboardY = m_windowHeight * 0.91f;
+        KeyboardWidget keyboard(80.0f, keyboardY, 44.0f, 44.0f, 7.0f);
+        keyboard.update(0.016f);
         keyboard.draw(renderer, m_font, game);
 
-        SDL_Color hintKeyColor{100, 100, 100, 255};
-        renderer.drawText("[H] Hint  [M] Music Toggle", centerX, m_windowHeight * 0.96f, hintKeyColor, m_font);
+        SDL_Color hintKeyColor{100, 115, 145, 255};
+        std::string controls = "[H] Hint   [M] Music   [S] Settings";
+        renderer.drawText(controls, centerX, m_windowHeight * 0.975f, hintKeyColor, m_font);
     }
 
     int getLastScore() const { return m_lastScore; }
@@ -142,6 +145,5 @@ private:
     TTF_Font* m_font{nullptr};
     float m_windowWidth{1280.0f};
     float m_windowHeight{720.0f};
-    int m_prevWrongGuesses{0};
     int m_lastScore{0};
 };
