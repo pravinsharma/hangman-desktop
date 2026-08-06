@@ -180,7 +180,7 @@ int main(int argc, char* argv[]) {
             }
 
             if (targetState == GameState::Menu) {
-                menuScreen.draw(sdlRenderer, titleFont, localization, settings);
+                menuScreen.draw(sdlRenderer, titleFont, uiFont, localization, settings);
             } else if (targetState == GameState::Settings) {
                 settingsScreen.draw(sdlRenderer, uiFont, settings, localization);
             } else if (targetState == GameState::Playing) {
@@ -193,7 +193,7 @@ int main(int argc, char* argv[]) {
             sdlRenderer.drawOverlay(transition.getAlpha());
         } else {
             if (currentState == GameState::Menu) {
-                menuScreen.draw(sdlRenderer, titleFont, localization, settings);
+                menuScreen.draw(sdlRenderer, titleFont, uiFont, localization, settings);
             } else if (currentState == GameState::Settings) {
                 settingsScreen.draw(sdlRenderer, uiFont, settings, localization);
             } else if (currentState == GameState::Playing) {
