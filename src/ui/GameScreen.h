@@ -90,46 +90,49 @@ public:
     void draw(const Renderer& renderer, const HangmanGame& game, int highScore, const LocalizationManager& localization) {
         renderer.clear(18, 18, 24, 255);
 
-        m_hangmanRenderer.draw(renderer, game.getWrongGuesses());
-
         float centerX = m_windowWidth / 2.0f;
+        float centerY = m_windowHeight / 2.0f;
+
+        m_hangmanRenderer.draw(renderer, game.getWrongGuesses());
 
         SDL_Color wordColor{230, 240, 255, 255};
         std::string masked = game.getMaskedWord();
-        renderer.drawText(masked, centerX, m_windowHeight * 0.52f, wordColor, m_font);
+        renderer.drawText(masked, centerX, centerY - 80.0f, wordColor, m_font);
 
         SDL_Color usedColor{140, 155, 190, 255};
         std::string used = game.getUsedLetters();
         if (!used.empty()) {
-            renderer.drawText("Used: " + used, centerX, m_windowHeight * 0.58f, usedColor, m_font);
+            renderer.drawText("Used: " + used, centerX, centerY - 30.0f, usedColor, m_font);
         }
 
         SDL_Color livesColor{240, 120, 120, 255};
         std::string lives = "Lives: " + std::to_string(game.getRemainingLives());
-        renderer.drawText(lives, centerX - 120.0f, m_windowHeight * 0.64f, livesColor, m_font);
+        renderer.drawText(lives, centerX - 110.0f, centerY + 20.0f, livesColor, m_font);
 
         SDL_Color hintsColor{150, 200, 255, 255};
         std::string hints = "Hints: " + std::to_string(game.getHintsRemaining());
-        renderer.drawText(hints, centerX + 120.0f, m_windowHeight * 0.64f, hintsColor, m_font);
+        renderer.drawText(hints, centerX + 110.0f, centerY + 20.0f, hintsColor, m_font);
 
         SDL_Color scoreColor{255, 235, 150, 255};
         std::string scoreText = "Score: " + std::to_string(calculateScore(game));
-        renderer.drawText(scoreText, centerX, m_windowHeight * 0.72f, scoreColor, m_font);
+        renderer.drawText(scoreText, centerX, centerY + 65.0f, scoreColor, m_font);
 
         SDL_Color highScoreColor{150, 235, 170, 255};
         std::string highScoreText = "Best: " + std::to_string(highScore);
-        renderer.drawText(highScoreText, centerX, m_windowHeight * 0.765f, highScoreColor, m_font);
+        renderer.drawText(highScoreText, centerX, centerY + 100.0f, highScoreColor, m_font);
 
-        float keyboardY = m_windowHeight * 0.82f;
-        float keyboardTotalWidth = 10 * 38.0f + 9 * 5.0f;
+        float keyboardY = centerY + 145.0f;
+        float keySize = 32.0f;
+        float keySpacing = 4.0f;
+        float keyboardTotalWidth = 10 * keySize + 9 * keySpacing;
         float keyboardStartX = centerX - keyboardTotalWidth / 2.0f;
-        KeyboardWidget keyboard(keyboardStartX, keyboardY, 38.0f, 38.0f, 5.0f);
+        KeyboardWidget keyboard(keyboardStartX, keyboardY, keySize, keySize, keySpacing);
         keyboard.update(0.016f);
         keyboard.draw(renderer, m_font, game);
 
         SDL_Color hintKeyColor{100, 115, 145, 255};
         std::string controls = "[H] Hint   [M] Music   [S] Settings";
-        renderer.drawText(controls, centerX, m_windowHeight * 0.96f, hintKeyColor, m_font);
+        renderer.drawText(controls, centerX, m_windowHeight * 0.94f, hintKeyColor, m_font);
     }
 
     int getLastScore() const { return m_lastScore; }
