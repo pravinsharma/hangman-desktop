@@ -26,3 +26,4 @@ Makefile
 *.so
 *.dylib
 *.a
+/data/scores.txt
