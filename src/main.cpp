@@ -19,8 +19,13 @@
 #include "ui/MenuScreen.h"
 #include "ui/GameScreen.h"
 #include "ui/ResultScreen.h"
+#include "ui/TransitionManager.h"
+#include "ui/ConfettiRenderer.h"
+#include "ui/SettingsScreen.h"
 #include "assets/AssetManager.h"
 #include "assets/AudioManager.h"
+#include "utils/LocalizationManager.h"
+#include "utils/SettingsManager.h"
 
 int main(int argc, char* argv[]) {
     if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO)) {
@@ -57,6 +62,8 @@ int main(int argc, char* argv[]) {
     AssetManager assetManager;
     AudioManager audioManager;
     audioManager.init();
+    LocalizationManager localization;
+    SettingsManager settings;
 
     const char* fontPath = "C:\\Windows\\Fonts\\arial.ttf";
     TTF_Font* titleFont = assetManager.getFont(fontPath, 64);
@@ -76,11 +83,15 @@ int main(int argc, char* argv[]) {
 
     GameScreen gameScreen(200.0f, 600.0f, uiFont, static_cast<float>(baseWidth), static_cast<float>(baseHeight));
     ResultScreen resultScreen;
+    SettingsScreen settingsScreen;
 
     HangmanGame game;
     std::string selectedCategory;
     Difficulty selectedDifficulty = Difficulty::Medium;
     GameState currentState = GameState::Menu;
+
+    TransitionManager transition;
+    ConfettiRenderer confetti;
 
     std::mt19937 rng(static_cast<unsigned int>(std::time(nullptr)));
 
@@ -98,6 +109,14 @@ int main(int argc, char* argv[]) {
                 running = false;
             }
 
+            if (currentState == GameState::Settings) {
+                GameState newState = settingsScreen.handleEvent(event, settings, localization);
+                if (newState == GameState::Menu) {
+                    currentState = GameState::Menu;
+                }
+                continue;
+            }
+
             switch (currentState) {
                 case GameState::Menu: {
                     GameState newState = menuScreen.handleEvent(event, selectedCategory, selectedDifficulty);
@@ -110,12 +129,21 @@ int main(int argc, char* argv[]) {
                         }
                         game.startNewGame(word, selectedCategory, selectedDifficulty);
                         currentState = GameState::Playing;
+                        transition.startFadeOut(0.2f);
+                    }
+                    if (newState == GameState::Settings) {
+                        currentState = GameState::Settings;
+                        transition.startFadeOut(0.2f);
                     }
                     break;
                 }
                 case GameState::Playing: {
                     GameState newState = gameScreen.handleEvent(event, game, scoreManager, audioManager);
                     if (newState != GameState::Playing) {
+                        transition.startFadeOut(0.3f);
+                        if (newState == GameState::Won) {
+                            confetti.spawn(640.0f, 360.0f);
+                        }
                         currentState = newState;
                     }
                     break;
@@ -125,6 +153,7 @@ int main(int argc, char* argv[]) {
                     GameState newState = resultScreen.handleEvent(event);
                     if (newState == GameState::Menu) {
                         currentState = GameState::Menu;
+                        transition.startFadeOut(0.3f);
                     }
                     break;
                 }
@@ -139,26 +168,43 @@ int main(int argc, char* argv[]) {
 
         gameScreen.setWindowSize(static_cast<float>(windowWidth), static_cast<float>(windowHeight));
         gameScreen.update(dt);
+        transition.update(dt);
+        confetti.update(dt);
 
         Renderer sdlRenderer(renderer);
 
-        switch (currentState) {
-            case GameState::Menu:
-                menuScreen.draw(sdlRenderer, titleFont);
-                break;
-            case GameState::Playing: {
+        if (transition.isActive() && transition.getAlpha() > 0.5f) {
+            GameState targetState = currentState;
+            if (currentState == GameState::Settings) {
+                targetState = GameState::Settings;
+            }
+
+            if (targetState == GameState::Menu) {
+                menuScreen.draw(sdlRenderer, titleFont, localization, settings);
+            } else if (targetState == GameState::Settings) {
+                settingsScreen.draw(sdlRenderer, uiFont, settings, localization);
+            } else if (targetState == GameState::Playing) {
                 int highScore = scoreManager.loadHighScore(game.getCategory());
                 gameScreen.draw(sdlRenderer, game, highScore);
-                break;
+            } else if (targetState == GameState::Won || targetState == GameState::Lost) {
+                resultScreen.draw(sdlRenderer, uiFont, targetState == GameState::Won, game.revealWord(), gameScreen.getLastScore(),
+                                  scoreManager.loadHighScore(game.getCategory()), localization);
             }
-            case GameState::Won:
-                resultScreen.draw(sdlRenderer, uiFont, true, game.revealWord(), gameScreen.getLastScore(),
-                                  scoreManager.loadHighScore(game.getCategory()));
-                break;
-            case GameState::Lost:
-                resultScreen.draw(sdlRenderer, uiFont, false, game.revealWord(), gameScreen.getLastScore(),
-                                  scoreManager.loadHighScore(game.getCategory()));
-                break;
+            sdlRenderer.drawOverlay(transition.getAlpha());
+        } else {
+            if (currentState == GameState::Menu) {
+                menuScreen.draw(sdlRenderer, titleFont, localization, settings);
+            } else if (currentState == GameState::Settings) {
+                settingsScreen.draw(sdlRenderer, uiFont, settings, localization);
+            } else if (currentState == GameState::Playing) {
+                int highScore = scoreManager.loadHighScore(game.getCategory());
+                gameScreen.draw(sdlRenderer, game, highScore);
+                confetti.draw(sdlRenderer);
+            } else if (currentState == GameState::Won || currentState == GameState::Lost) {
+                resultScreen.draw(sdlRenderer, uiFont, currentState == GameState::Won, game.revealWord(), gameScreen.getLastScore(),
+                                  scoreManager.loadHighScore(game.getCategory()), localization);
+                confetti.draw(sdlRenderer);
+            }
         }
 
         sdlRenderer.present();

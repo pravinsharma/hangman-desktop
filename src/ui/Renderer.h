@@ -52,6 +52,12 @@ public:
         SDL_RenderFillRect(m_renderer, &rect);
     }
 
+    void drawOverlay(float alpha) const {
+        SDL_SetRenderDrawColor(m_renderer, 0, 0, 0, static_cast<Uint8>(alpha * 255));
+        SDL_FRect rect{0.0f, 0.0f, 2000.0f, 2000.0f};
+        SDL_RenderFillRect(m_renderer, &rect);
+    }
+
     void drawLine(float x1, float y1, float x2, float y2, SDL_Color color) const {
         SDL_SetRenderDrawColor(m_renderer, color.r, color.g, color.b, color.a);
         SDL_RenderLine(m_renderer, x1, y1, x2, y2);

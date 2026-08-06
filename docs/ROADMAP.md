@@ -58,12 +58,12 @@
 ## Phase 4 — Polish & UX
 | # | Milestone | Status |
 |---|-----------|--------|
-| 4.1 | Animated transitions between screens (fade / slide) | `[ ]` |
-| 4.2 | Keyboard key visual feedback (highlight on key press) | `[ ]` |
-| 4.3 | Confetti / particle effect on win | `[ ]` |
-| 4.4 | Localization support (EN + IN-HI) | `[ ]` |
-| 4.5 | Accessibility: color-blind mode, larger text toggle | `[ ]` |
-| 4.6 | In-game settings menu (sound, display, language) | `[ ]` |
+| 4.1 | Animated transitions between screens (fade / slide) | `[x]` |
+| 4.2 | Keyboard key visual feedback (highlight on key press) | `[x]` |
+| 4.3 | Confetti / particle effect on win | `[x]` |
+| 4.4 | Localization support (EN + IN-HI) | `[x]` |
+| 4.5 | Accessibility: color-blind mode, larger text toggle | `[x]` |
+| 4.6 | In-game settings menu (sound, display, language) | `[x]` |
 
 ---
 
@@ -86,6 +86,6 @@
 | Phase 1 — Core Game Engine | 7 | 7 | 100% |
 | Phase 2 — UI & Rendering | 6 | 6 | 100% |
 | Phase 3 — Game Features | 7 | 7 | 100% |
-| Phase 4 — Polish & UX | 0 | 6 | 0% |
+| Phase 4 — Polish & UX | 6 | 6 | 100% |
 | Phase 5 — Distribution & Deployment | 0 | 5 | 0% |
-| **Total** | **26** | **37** | **~70%** |
+| **Total** | **32** | **37** | **~86%** |

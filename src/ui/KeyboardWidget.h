@@ -20,7 +20,19 @@ public:
 
         SDL_Keycode key = event.key.key;
         if (key >= SDLK_A && key <= SDLK_Z) {
-            callback(static_cast<char>(key));
+            char letter = static_cast<char>(std::toupper(key - SDLK_A + 'A'));
+            int idx = letter - 'A';
+            m_flashTimer[idx] = 0.2f;
+            callback(letter);
+        }
+    }
+
+    void update(float dt) {
+        for (float& timer : m_flashTimer) {
+            if (timer > 0.0f) {
+                timer -= dt;
+                if (timer < 0.0f) timer = 0.0f;
+            }
         }
     }
 
@@ -36,9 +48,17 @@ public:
 
             char letter = keys[i];
             bool used = game.isLetterUsed(letter);
+            bool flashing = m_flashTimer[i] > 0.0f;
 
             SDL_Color bgColor = used ? SDL_Color{80, 80, 80, 255} : SDL_Color{60, 60, 60, 255};
             SDL_Color textColor = used ? SDL_Color{120, 120, 120, 255} : SDL_Color{220, 220, 220, 255};
+
+            if (flashing && !used) {
+                float flash = m_flashTimer[i] / 0.2f;
+                bgColor.r = static_cast<Uint8>(60 + 195 * flash);
+                bgColor.g = static_cast<Uint8>(60 + 195 * flash);
+                bgColor.b = static_cast<Uint8>(60 + 195 * flash);
+            }
 
             renderer.drawRect(x, y, m_keyWidth, m_keyHeight, bgColor);
 
@@ -53,4 +73,5 @@ private:
     float m_keyWidth{40.0f};
     float m_keyHeight{40.0f};
     float m_spacing{4.0f};
+    std::array<float, 26> m_flashTimer{};
 };

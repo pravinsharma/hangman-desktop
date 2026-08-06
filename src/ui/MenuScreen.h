@@ -2,10 +2,10 @@
 
 #include "Renderer.h"
 #include "game/GameState.h"
-#include "game/HangmanGame.h"
 #include "game/WordBank.h"
 #include "ui/KeyboardWidget.h"
-#include "game/Difficulty.h"
+#include "utils/LocalizationManager.h"
+#include "utils/SettingsManager.h"
 #include <string>
 #include <string_view>
 #include <vector>
@@ -44,6 +44,10 @@ public:
             m_dailyMode = !m_dailyMode;
         }
 
+        if (key == SDLK_S) {
+            return GameState::Settings;
+        }
+
         if (key == SDLK_ESCAPE) {
             return GameState::Menu;
         }
@@ -51,14 +55,14 @@ public:
         return GameState::Menu;
     }
 
-    void draw(const Renderer& renderer, TTF_Font* font) const {
+    void draw(const Renderer& renderer, TTF_Font* font, const LocalizationManager& localization, const SettingsManager& settings) {
         renderer.clear(30, 30, 30, 255);
 
         SDL_Color titleColor{255, 255, 255, 255};
-        renderer.drawText("HANGMAN", 640.0f, 120.0f, titleColor, font);
+        renderer.drawText(localization.get("title"), 640.0f, 120.0f, titleColor, font);
 
         SDL_Color subtitleColor{180, 180, 180, 255};
-        renderer.drawText("Select a category:", 640.0f, 190.0f, subtitleColor, font);
+        renderer.drawText(localization.get("select_category"), 640.0f, 190.0f, subtitleColor, font);
 
         for (size_t i = 0; i < m_categories.size(); ++i) {
             SDL_Color catColor{220, 220, 220, 255};
@@ -68,16 +72,16 @@ public:
         }
 
         SDL_Color diffColor{255, 255, 150, 255};
-        std::string diffText = std::string("Difficulty: ") + std::string(to_string(m_selectedDifficulty));
+        std::string diffText = localization.get("difficulty") + " " + std::string(to_string(m_selectedDifficulty));
         renderer.drawText(diffText, 640.0f, 480.0f, diffColor, font);
 
         SDL_Color dailyColor{150, 255, 150, 255};
-        std::string dailyText = std::string("Daily Mode: ") + (m_dailyMode ? "ON" : "OFF");
+        std::string dailyText = localization.get("daily_mode") + " " + (m_dailyMode ? localization.get("on") : localization.get("off"));
         renderer.drawText(dailyText, 640.0f, 530.0f, dailyColor, font);
 
         SDL_Color hintColor{120, 120, 120, 255};
-        renderer.drawText("Press 1-9 to select category", 640.0f, 600.0f, hintColor, font);
-        renderer.drawText("LEFT/RIGHT to change difficulty | D to toggle daily mode", 640.0f, 640.0f, hintColor, font);
+        renderer.drawText(localization.get("select_category_hint"), 640.0f, 600.0f, hintColor, font);
+        renderer.drawText(localization.get("difficulty_hint"), 640.0f, 640.0f, hintColor, font);
     }
 
     void setCategories(const std::vector<std::string>& cats) {
